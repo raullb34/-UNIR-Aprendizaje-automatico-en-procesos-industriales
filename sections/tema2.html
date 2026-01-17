@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Datos: Descriptivo y Exploratorio | UNIR</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom Styles & Overrides */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #334155; /* Slate 700 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Max width constraint */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 280px;
+            }
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Range Slider Styling */
+        input[type=range] {
+            -webkit-appearance: none; 
+            background: transparent; 
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #3b82f6;
+            cursor: pointer;
+            margin-top: -8px; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #cbd5e1;
+            border-radius: 2px;
+        }
+    </style>
+    
+    <!-- Placeholder Comments Required -->
+    <!-- Chosen Palette: Slate (Neutrals) + Blue (Primary) + Emerald/Rose (Accents). Minimalist and professional/industrial. -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Introduction to Descriptive & Exploratory Analysis (Context).
+         2. Variable Types Module: Interactive card sorting to understand Qualitative vs Quantitative.
+         3. Distribution Dashboard: Interactive Histogram where users simulate industrial sensor data (Normal vs Skewed) to see Mean/Median shifts.
+         4. Outlier Lab: Interactive Boxplot to visualize IQR and anomaly detection.
+         5. Correlation Lab: Interactive Scatter Plot with a slider to adjust 'r' (correlation coefficient) dynamically.
+         6. Footer: Summary/Takeaways.
+         Why: This structure moves from basic definitions to complex relationships, mirroring the report's flow but adding "lab" elements for active learning.
+    -->
+    <!-- Visualization & Content Choices:
+         - Histogram (Chart.js): Goal: Show distribution shapes. Interaction: Toggle datasets.
+         - Boxplot (Chart.js + Plugin): Goal: Show outliers/quartiles. Interaction: Add outlier points.
+         - Scatter Plot (Chart.js): Goal: Visualize Correlation. Interaction: Slider to change 'r' value in real-time.
+         - Text: Concise summaries from the PDF, focusing on "Ideas Clave".
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+</head>
+<body class="antialiased">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-4">
+                <a href="../index.html" class="text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-2 w-fit">
+                    <i class="fa-solid fa-arrow-left"></i> Volver al Hub
+                </a>
+            </div>
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-blue-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-slate-800">DataLab <span class="font-light text-slate-500">| Tema 2</span></span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#variables" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Variables</a>
+                    <a href="#distribuciones" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Distribuciones</a>
+                    <a href="#outliers" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Outliers</a>
+                    <a href="#correlacion" class="text-slate-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Correlación</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+            <div class="text-center">
+                <span class="inline-block py-1 px-3 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold tracking-wide uppercase mb-4">Análisis de Datos</span>
+                <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl">
+                    Descriptivo y <span class="text-blue-600">Exploratorio</span>
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500">
+                    Antes de entrenar cualquier modelo de Machine Learning, debemos entender los datos. Aprende a recolectar, organizar y escuchar lo que tus datos industriales tienen que decir.
+                </p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <button onclick="document.getElementById('variables').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 md:text-lg md:px-10 shadow-lg hover:shadow-xl transition-all">
+                        Comenzar Exploración
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Section 1: Tipos de Variables -->
+    <section id="variables" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900">La Naturaleza de los Datos</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+                    El primer paso en el análisis descriptivo es identificar con qué tipo de datos estamos trabajando. Esto determina qué estadísticos y gráficos podemos usar.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Cualitativas -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-rose-100 rounded-lg text-rose-600">
+                            <i class="fa-solid fa-tags text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Variables Cualitativas (Categóricas)</h3>
+                    </div>
+                    <p class="text-slate-600 mb-6">Describen cualidades o atributos. No tienen valor numérico intrínseco.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-rose-400 pl-4 py-1">
+                            <h4 class="font-semibold text-slate-800">Nominales</h4>
+                            <p class="text-sm text-slate-500">Sin orden. Ej: Defecto A, Defecto B, Color.</p>
+                        </div>
+                        <div class="border-l-4 border-rose-400 pl-4 py-1">
+                            <h4 class="font-semibold text-slate-800">Ordinales</h4>
+                            <p class="text-sm text-slate-500">Con jerarquía. Ej: Calidad Baja, Media, Alta.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuantitativas -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-3 bg-emerald-100 rounded-lg text-emerald-600">
+                            <i class="fa-solid fa-ruler-combined text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Variables Cuantitativas (Numéricas)</h3>
+                    </div>
+                    <p class="text-slate-600 mb-6">Se pueden medir o contar. Permiten operaciones matemáticas.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-emerald-400 pl-4 py-1">
+                            <h4 class="font-semibold text-slate-800">Discretas</h4>
+                            <p class="text-sm text-slate-500">Valores contables (enteros). Ej: Nº de piezas defectuosas.</p>
+                        </div>
+                        <div class="border-l-4 border-emerald-400 pl-4 py-1">
+                            <h4 class="font-semibold text-slate-800">Continuas</h4>
+                            <p class="text-sm text-slate-500">Infinitos valores en un rango. Ej: Temperatura, Presión.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 2: Distribuciones (Interactive Histogram) -->
+    <section id="distribuciones" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <!-- Text Content -->
+                <div class="lg:col-span-1">
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-4">Caracterización de Distribuciones</h2>
+                    <p class="text-slate-600 mb-6">
+                        Las medidas de <strong>tendencia central</strong> nos dicen dónde se agrupan los datos. Dependiendo de la forma de la distribución (simetría), la relación entre Media, Mediana y Moda cambia.
+                    </p>
+                    
+                    <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 space-y-4 mb-6">
+                        <h3 class="font-bold text-slate-800 border-b border-slate-200 pb-2">Panel de Control</h3>
+                        <p class="text-sm text-slate-500">Simula lecturas de un sensor industrial:</p>
+                        
+                        <div class="flex flex-col gap-2">
+                            <button id="btnNormal" class="w-full text-left px-4 py-2 rounded-md bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-600 transition-colors shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500 active-distribution">
+                                <i class="fa-solid fa-bell mr-2"></i> Distribución Normal (Simétrica)
+                            </button>
+                            <button id="btnSkewed" class="w-full text-left px-4 py-2 rounded-md bg-white border border-slate-300 hover:border-blue-500 hover:text-blue-600 transition-colors shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <i class="fa-solid fa-arrow-right mr-2"></i> Sesgo a la Derecha (Asimétrica)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Stats Panel -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-3 rounded text-center">
+                            <span class="block text-xs uppercase tracking-wide text-blue-500 font-bold">Media</span>
+                            <span id="valMean" class="text-2xl font-bold text-slate-800">--</span>
+                        </div>
+                        <div class="bg-emerald-50 p-3 rounded text-center">
+                            <span class="block text-xs uppercase tracking-wide text-emerald-500 font-bold">Mediana</span>
+                            <span id="valMedian" class="text-2xl font-bold text-slate-800">--</span>
+                        </div>
+                    </div>
+                    <p id="statsComment" class="text-xs text-slate-400 mt-2 italic text-center">Selecciona una distribución...</p>
+
+                </div>
+
+                <!-- Visualization -->
+                <div class="lg:col-span-2 flex flex-col justify-center">
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-4">
+                        <div class="chart-container">
+                            <canvas id="distChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-sm text-slate-500 text-center">
+                        <i class="fa-solid fa-circle-info mr-1 text-blue-500"></i>
+                        En una distribución normal, media ≈ mediana. En una sesgada, la media es "arrastrada" por la cola.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Outliers & Dispersión -->
+    <section id="outliers" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-slate-900">Dispersión y Detección de Anomalías</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-3xl mx-auto">
+                    La varianza y desviación típica nos dicen cuánto se alejan los datos de la media. Los <strong>Boxplots (Diagramas de Caja)</strong> son herramientas poderosas para visualizar la dispersión y detectar valores atípicos (outliers).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Explanation -->
+                <div class="order-2 lg:order-1">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-800 mb-4">Anatomía de un Boxplot</h3>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-xs mr-3">1</span>
+                                <span><strong>Caja (IQR):</strong> Rango Intercuartílico (Q3 - Q1). Contiene el 50% central de los datos.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-xs mr-3">2</span>
+                                <span><strong>Línea Central:</strong> La Mediana (Q2).</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-600 font-bold text-xs mr-3">3</span>
+                                <span><strong>Bigotes:</strong> Se extienden hasta 1.5 veces el IQR.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="flex-shrink-0 h-6 w-6 flex items-center justify-center rounded-full bg-rose-100 text-rose-600 font-bold text-xs mr-3">!</span>
+                                <span><strong>Puntos fuera:</strong> Son los Outliers (Valores atípicos). Posibles errores de sensor o anomalías del proceso.</span>
+                            </li>
+                        </ul>
+                        <div class="mt-6 pt-6 border-t border-slate-100">
+                             <button id="btnAddOutlier" class="w-full py-2 px-4 border border-rose-500 text-rose-600 rounded-md hover:bg-rose-50 transition-colors font-medium">
+                                <i class="fa-solid fa-plus mr-2"></i> Añadir Anomalía Extrema
+                            </button>
+                            <button id="btnResetBoxplot" class="w-full mt-2 py-2 px-4 text-slate-500 hover:text-slate-700 text-sm">
+                                Resetear Datos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="order-1 lg:order-2 bg-white rounded-xl shadow-lg border border-slate-100 p-4">
+                    <div class="chart-container">
+                        <canvas id="boxChart"></canvas>
+                    </div>
+                    <p class="text-center text-sm text-slate-500 mt-4">Distribución de Temperatura (ºC) - Proceso A</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Correlación (Interactive Scatter) -->
+    <section id="correlacion" class="py-16 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                
+                <!-- Controls & Info -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div>
+                        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Correlación</h2>
+                        <div class="h-1 w-20 bg-blue-600 rounded"></div>
+                    </div>
+                    
+                    <p class="text-slate-600">
+                        La correlación de Pearson (<strong>r</strong>) mide la fuerza y dirección de la relación lineal entre dos variables.
+                    </p>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <label for="corrSlider" class="block text-sm font-medium text-slate-700 mb-4">
+                            Ajustar coeficiente <em>r</em>: <span id="rValueDisplay" class="font-bold text-blue-600">0.0</span>
+                        </label>
+                        <input type="range" min="-10" max="10" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" id="corrSlider">
+                        
+                        <div class="flex justify-between text-xs text-slate-400 mt-2">
+                            <span>-1 (Inv. Perfecta)</span>
+                            <span>0 (Sin relación)</span>
+                            <span>+1 (Pos. Perfecta)</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-md">
+                        <h4 class="font-bold text-blue-900 text-sm">¿Sabías qué?</h4>
+                        <p class="text-sm text-blue-800 mt-1">
+                            Correlación no implica causalidad. Dos sensores pueden correlacionarse porque ambos dependen de una tercera variable (ej: temperatura ambiente).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="lg:col-span-2">
+                    <div class="bg-white rounded-xl shadow-lg border border-slate-100 p-4 relative">
+                        <div class="absolute top-4 right-4 bg-white/90 px-3 py-1 rounded shadow text-xs font-bold text-slate-500 z-10">
+                            Gráfico de Dispersión
+                        </div>
+                        <div class="chart-container" style="height: 400px; max-height: 450px;">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mt-6 text-center">
+                        <div class="p-2">
+                            <span class="block text-2xl font-bold text-slate-800">r > 0</span>
+                            <span class="text-xs text-slate-500">Relación Positiva</span>
+                        </div>
+                        <div class="p-2 border-l border-r border-slate-200">
+                            <span class="block text-2xl font-bold text-slate-800">r ≈ 0</span>
+                            <span class="text-xs text-slate-500">Sin Relación Lineal</span>
+                        </div>
+                        <div class="p-2">
+                            <span class="block text-2xl font-bold text-slate-800">r < 0</span>
+                            <span class="text-xs text-slate-500">Relación Inversa</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resumen del Tema 2</h3>
+                    <ul class="space-y-2 text-slate-400 text-sm">
+                        <li><i class="fa-solid fa-check mr-2 text-green-500"></i> Identificar tipos de variables es el primer paso.</li>
+                        <li><i class="fa-solid fa-check mr-2 text-green-500"></i> La visualización (histogramas, boxplots) revela más que los números solos.</li>
+                        <li><i class="fa-solid fa-check mr-2 text-green-500"></i> Detectar y tratar outliers es crucial para la calidad del modelo.</li>
+                        <li><i class="fa-solid fa-check mr-2 text-green-500"></i> La correlación nos ayuda a seleccionar características (features).</li>
+                    </ul>
+                </div>
+                <div class="text-right flex flex-col justify-end">
+                    <p class="text-slate-500 text-sm">Aprendizaje Automático en Procesos Industriales</p>
+                    <p class="text-slate-600 text-xs mt-1">Generado para fines educativos basado en material de UNIR.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- UTILITIES ---
+        function generateNormalData(mean, stdDev, count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                let u = 0, v = 0;
+                while (u === 0) u = Math.random();
+                while (v === 0) v = Math.random();
+                let z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+                data.push(mean + z * stdDev);
+            }
+            return data;
+        }
+
+        function generateSkewedData(mean, count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                // Exponential-ish distribution using log-normal logic approx
+                let val = Math.exp(Math.random() * 2) * mean * 0.3 + (Math.random() * 10);
+                data.push(val);
+            }
+            return data;
+        }
+
+        function calculateMean(arr) {
+            return arr.reduce((a, b) => a + b, 0) / arr.length;
+        }
+
+        function calculateMedian(arr) {
+            const mid = Math.floor(arr.length / 2);
+            const nums = [...arr].sort((a, b) => a - b);
+            return arr.length % 2 !== 0 ? nums[mid] : (nums[mid - 1] + nums[mid]) / 2;
+        }
+
+        // --- CHART 1: DISTRIBUTION (HISTOGRAM) ---
+        const ctxDist = document.getElementById('distChart').getContext('2d');
+        
+        // Helper to bucketize data for histogram
+        function createHistogramData(data, binCount) {
+            const max = Math.max(...data);
+            const min = Math.min(...data);
+            const range = max - min;
+            const binSize = range / binCount;
+            const bins = new Array(binCount).fill(0);
+            const labels = [];
+            
+            for(let i=0; i<binCount; i++) {
+                labels.push((min + i*binSize).toFixed(1));
+            }
+
+            data.forEach(val => {
+                let binIndex = Math.floor((val - min) / binSize);
+                if (binIndex >= binCount) binIndex = binCount - 1;
+                bins[binIndex]++;
+            });
+
+            return { labels, bins };
+        }
+
+        let currentDistData = generateNormalData(50, 10, 1000); // Initial Normal
+        let histData = createHistogramData(currentDistData, 20);
+
+        const distChart = new Chart(ctxDist, {
+            type: 'bar',
+            data: {
+                labels: histData.labels,
+                datasets: [{
+                    label: 'Frecuencia',
+                    data: histData.bins,
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 1,
+                    barPercentage: 1.0,
+                    categoryPercentage: 1.0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: (context) => `Rango: ${context[0].label}`,
+                        }
+                    }
+                },
+                scales: {
+                    x: { 
+                        grid: { display: false },
+                        title: { display: true, text: 'Valor del Sensor' }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Frecuencia' }
+                    }
+                }
+            }
+        });
+
+        function updateStatsDisplay(data, type) {
+            const mean = calculateMean(data).toFixed(2);
+            const median = calculateMedian(data).toFixed(2);
+            
+            document.getElementById('valMean').innerText = mean;
+            document.getElementById('valMedian').innerText = median;
+            
+            const comment = document.getElementById('statsComment');
+            if(type === 'normal') {
+                comment.innerText = "Simetría: Media ≈ Mediana";
+                comment.className = "text-xs text-emerald-600 mt-2 font-bold text-center";
+            } else {
+                comment.innerText = "Asimetría: La Media es desplazada por la cola larga.";
+                comment.className = "text-xs text-rose-600 mt-2 font-bold text-center";
+            }
+        }
+
+        // Init Stats
+        updateStatsDisplay(currentDistData, 'normal');
+
+        document.getElementById('btnNormal').addEventListener('click', () => {
+            currentDistData = generateNormalData(50, 10, 1000);
+            const hData = createHistogramData(currentDistData, 20);
+            distChart.data.labels = hData.labels;
+            distChart.data.datasets[0].data = hData.bins;
+            distChart.update();
+            updateStatsDisplay(currentDistData, 'normal');
+        });
+
+        document.getElementById('btnSkewed').addEventListener('click', () => {
+            currentDistData = generateSkewedData(50, 1000);
+            const hData = createHistogramData(currentDistData, 20);
+            distChart.data.labels = hData.labels;
+            distChart.data.datasets[0].data = hData.bins;
+            distChart.update();
+            updateStatsDisplay(currentDistData, 'skewed');
+        });
+
+        // --- CHART 2: BOXPLOT (Using Chart.js primitive approach) ---
+        // Since Chart.js boxplot needs a plugin, we will simulate a simplified visual using a Bar chart 
+        // with 'floating' bars to represent the box, and error bars (custom drawn or simplified) to represent whiskers.
+        // For simplicity and stability without external plugins in this constraints, we will draw a "Candlestick-like" representation 
+        // using floating bars for Q1-Q3 and scatter points for outliers.
+        
+        const ctxBox = document.getElementById('boxChart').getContext('2d');
+        
+        let boxDataPoints = generateNormalData(25, 2, 50); // Clean data
+        
+        function getQuartiles(data) {
+            const sorted = [...data].sort((a, b) => a - b);
+            const q1 = sorted[Math.floor(sorted.length * 0.25)];
+            const median = sorted[Math.floor(sorted.length * 0.5)];
+            const q3 = sorted[Math.floor(sorted.length * 0.75)];
+            const min = sorted[0];
+            const max = sorted[sorted.length - 1];
+            return { min, q1, median, q3, max, sorted };
+        }
+
+        let qData = getQuartiles(boxDataPoints);
+
+        // We will visualize:
+        // 1. A floating bar from Q1 to Q3 (The Box)
+        // 2. A line for median (we'll assume strictly visual approximation for this demo using a thin floating bar)
+        // 3. Scatter points for ALL data to show distribution and outliers clearly "Jitter plot style"
+        
+        const boxChart = new Chart(ctxBox, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Lecturas Sensor',
+                        data: boxDataPoints.map((v, i) => ({x: (Math.random() * 0.2) - 0.1, y: v})), // Jitter on X
+                        backgroundColor: (ctx) => {
+                            const v = ctx.raw?.y;
+                            // Highlight outliers based on 1.5 IQR logic roughly
+                            const iqr = qData.q3 - qData.q1;
+                            const upper = qData.q3 + 1.5*iqr;
+                            const lower = qData.q1 - 1.5*iqr;
+                            if (v > upper || v < lower) return 'rgba(225, 29, 72, 0.8)'; // Red outlier
+                            return 'rgba(148, 163, 184, 0.5)'; // Slate normal
+                        },
+                        pointRadius: 4
+                    },
+                    {
+                        // Q1-Q3 Box visualization (Simplified as a line for context)
+                        type: 'bar',
+                        label: 'Rango IQR (Q1-Q3)',
+                        data: [{x: 0, y: [qData.q1, qData.q3]}],
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 0.5)',
+                        borderWidth: 2,
+                        barThickness: 100,
+                        order: 10
+                    },
+                    {
+                        // Median Line
+                        type: 'bar',
+                        label: 'Mediana',
+                        data: [{x: 0, y: [qData.median - 0.1, qData.median + 0.1]}], // Thin bar simulating line
+                        backgroundColor: 'rgba(59, 130, 246, 1)',
+                        barThickness: 100,
+                        order: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        min: -1,
+                        max: 1,
+                        display: false // Hide X axis
+                    },
+                    y: {
+                        title: { display: true, text: 'Temperatura (ºC)' }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: (ctx) => `Valor: ${ctx.raw.y.toFixed(2)}`
+                        }
+                    }
+                }
+            }
+        });
+
+        document.getElementById('btnAddOutlier').addEventListener('click', () => {
+            // Add a very high value
+            const outlier = 40 + Math.random() * 10;
+            boxDataPoints.push(outlier);
+            
+            // Recalculate stats
+            qData = getQuartiles(boxDataPoints);
+            
+            // Update Chart
+            boxChart.data.datasets[0].data = boxDataPoints.map((v) => ({x: (Math.random() * 0.2) - 0.1, y: v}));
+            boxChart.data.datasets[1].data = [{x: 0, y: [qData.q1, qData.q3]}];
+            boxChart.data.datasets[2].data = [{x: 0, y: [qData.median - 0.1, qData.median + 0.1]}];
+            
+            boxChart.update();
+        });
+
+        document.getElementById('btnResetBoxplot').addEventListener('click', () => {
+            boxDataPoints = generateNormalData(25, 2, 50);
+            qData = getQuartiles(boxDataPoints);
+            boxChart.data.datasets[0].data = boxDataPoints.map((v) => ({x: (Math.random() * 0.2) - 0.1, y: v}));
+            boxChart.data.datasets[1].data = [{x: 0, y: [qData.q1, qData.q3]}];
+            boxChart.data.datasets[2].data = [{x: 0, y: [qData.median - 0.1, qData.median + 0.1]}];
+            boxChart.update();
+        });
+
+
+        // --- CHART 3: CORRELATION (SCATTER) ---
+        const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+        
+        function generateCorrelatedData(r, count) {
+            const data = [];
+            for (let i = 0; i < count; i++) {
+                let x = Math.random() * 10;
+                let error = (Math.random() - 0.5) * 5 * (1 - Math.abs(r)); // Error decreases as r approaches 1
+                let y = (r * x) + (5 * (1-Math.abs(r))) + error;
+                // Normalize slightly for visuals
+                if (r < 0) y = y + 10; 
+                data.push({x: x, y: y});
+            }
+            return data;
+        }
+
+        let rVal = 0;
+        let scatterData = generateCorrelatedData(0, 100);
+
+        const scatterChart = new Chart(ctxScatter, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Muestras',
+                    data: scatterData,
+                    backgroundColor: 'rgba(59, 130, 246, 0.6)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: 'Variable X (ej: Presión)' },
+                        min: 0, max: 10
+                    },
+                    y: {
+                        title: { display: true, text: 'Variable Y (ej: Vibración)' },
+                        min: -5, max: 15
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                },
+                animation: {
+                    duration: 0 // Fast update for slider
+                }
+            }
+        });
+
+        const slider = document.getElementById('corrSlider');
+        const rDisplay = document.getElementById('rValueDisplay');
+
+        slider.addEventListener('input', (e) => {
+            const val = parseInt(e.target.value);
+            const r = val / 10;
+            rDisplay.innerText = r.toFixed(1);
+            
+            // Update logic
+            const newData = generateCorrelatedData(r, 100);
+            scatterChart.data.datasets[0].data = newData;
+            
+            // Visual feedback on chart color based on correlation strength
+            if (Math.abs(r) > 0.7) {
+                scatterChart.data.datasets[0].backgroundColor = 'rgba(16, 185, 129, 0.7)'; // Emerald for strong
+            } else if (Math.abs(r) < 0.3) {
+                 scatterChart.data.datasets[0].backgroundColor = 'rgba(148, 163, 184, 0.6)'; // Grey for weak
+            } else {
+                 scatterChart.data.datasets[0].backgroundColor = 'rgba(59, 130, 246, 0.6)'; // Blue for moderate
+            }
+
+            scatterChart.update();
+        });
+
+    </script>
+</body>
+</html>

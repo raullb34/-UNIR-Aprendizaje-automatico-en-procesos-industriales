@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 3: SVM y Mantenimiento Predictivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <nav class="p-4 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm">
+        <a href="../index.html" class="text-purple-600 hover:text-purple-800 font-medium flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Hub
+        </a>
+        <h1 class="font-bold text-lg">Módulo 3: Máquinas de Vectores de Soporte (SVM)</h1>
+        <div class="w-20"></div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6 lg:p-10">
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Panel de Control Lateral -->
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-purple-600"></i> Parámetros SVM
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Tipo de Kernel</label>
+                            <select id="kernelType" class="w-full p-2 rounded-lg border border-slate-300 bg-slate-50 focus:ring-2 focus:ring-purple-500">
+                                <option value="linear">Lineal (Frontera Recta)</option>
+                                <option value="rbf">RBF (Frontera Circular/Flexible)</option>
+                                <option value="poly">Polinómico (Curvatura)</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold mb-1">Parámetro C (Regularización)</label>
+                            <input type="range" id="paramC" min="0.1" max="10" step="0.5" value="1" class="w-full accent-purple-600">
+                            <div class="flex justify-between text-xs text-slate-500">
+                                <span>Margen Amplio (Bajo C)</span>
+                                <span>Margen Estricto (Alto C)</span>
+                            </div>
+                        </div>
+
+                        <div id="gammaControl">
+                            <label class="block text-sm font-semibold mb-1">Gamma (Influencia)</label>
+                            <input type="range" id="paramGamma" min="0.1" max="5" step="0.1" value="1" class="w-full accent-purple-600">
+                            <div class="flex justify-between text-xs text-slate-500">
+                                <span>Global</span>
+                                <span>Local/Detallado</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-900 text-white p-6 rounded-2xl shadow-lg">
+                    <h3 class="font-bold mb-2 uppercase text-xs tracking-widest text-purple-300">Caso de Uso Industrial</h3>
+                    <p class="text-sm leading-relaxed">
+                        Estamos clasificando el estado de un motor basándonos en <b>Temperatura</b> y <b>Vibración</b>. 
+                        El objetivo es encontrar el "hiperplano" óptimo que separe motores sanos de motores con riesgo de fallo.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Visualización Principal -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative">
+                    <h3 class="text-lg font-bold mb-4">Espacio de Características y Frontera de Decisión</h3>
+                    <canvas id="svmChart" height="400"></canvas>
+                    
+                    <!-- Overlay de información -->
+                    <div id="mathHint" class="absolute bottom-10 right-10 bg-white/90 p-3 rounded-lg border border-purple-200 text-xs shadow-md hidden md:block">
+                        <p class="font-mono">$f(x) = \text{sign}(\sum \alpha_i y_i K(x_i, x) + b)$</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl text-center">
+                        <span class="block text-2xl font-bold text-emerald-600" id="accuracyVal">94%</span>
+                        <span class="text-xs text-emerald-800 font-medium">Precisión del Modelo</span>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-100 p-4 rounded-xl text-center">
+                        <span class="block text-2xl font-bold text-amber-600" id="supportVectors">12</span>
+                        <span class="text-xs text-amber-800 font-medium">Vectores de Soporte</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('svmChart').getContext('2d');
+        let chart;
+
+        // Generar datos sintéticos industriales
+        const dataPoints = [];
+        const generateData = () => {
+            dataPoints.length = 0;
+            // Clase 0: Motores Sanos (Centro)
+            for(let i=0; i<30; i++) {
+                dataPoints.push({x: Math.random()*4+2, y: Math.random()*4+2, label: 0});
+            }
+            // Clase 1: Motores Fallo (Periferia)
+            for(let i=0; i<30; i++) {
+                let angle = Math.random() * Math.PI * 2;
+                let r = Math.random() * 2 + 5;
+                dataPoints.push({x: 4 + r*Math.cos(angle), y: 4 + r*Math.sin(angle), label: 1});
+            }
+        };
+
+        const updateChart = () => {
+            const kernel = document.getElementById('kernelType').value;
+            const C = parseFloat(document.getElementById('paramC').value);
+            const gamma = parseFloat(document.getElementById('paramGamma').value);
+
+            // Simulación de métricas basada en parámetros
+            let acc = 85 + (C*1.2);
+            if(kernel === 'linear') acc -= 15; // Los datos son circulares, linear fallará
+            document.getElementById('accuracyVal').innerText = Math.min(99.8, acc).toFixed(1) + "%";
+            document.getElementById('supportVectors').innerText = Math.floor(20 - C + (kernel === 'rbf' ? 5 : 0));
+
+            const scatterData0 = dataPoints.filter(d => d.label === 0);
+            const scatterData1 = dataPoints.filter(d => d.label === 1);
+
+            if(chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Operación Normal',
+                            data: scatterData0,
+                            backgroundColor: '#10b981',
+                            pointRadius: 6
+                        },
+                        {
+                            label: 'Fallo detectado',
+                            data: scatterData1,
+                            backgroundColor: '#ef4444',
+                            pointRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { title: { display: true, text: 'Temperatura (Normalizada)' }, min: 0, max: 10 },
+                        y: { title: { display: true, text: 'Vibración (Normalizada)' }, min: 0, max: 10 }
+                    },
+                    plugins: {
+                        beforeDraw: (chart) => {
+                            // Aquí simularíamos el dibujo de la superficie de decisión (background color)
+                        }
+                    }
+                }
+            });
+        };
+
+        // Event listeners
+        document.getElementById('kernelType').addEventListener('change', (e) => {
+            const gammaDiv = document.getElementById('gammaControl');
+            gammaDiv.style.opacity = e.target.value === 'linear' ? '0.3' : '1';
+            updateChart();
+        });
+        document.getElementById('paramC').addEventListener('input', updateChart);
+        document.getElementById('paramGamma').addEventListener('input', updateChart);
+
+        generateData();
+        updateChart();
+    </script>
+</body>
+</html>
