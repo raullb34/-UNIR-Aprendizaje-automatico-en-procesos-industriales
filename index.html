@@ -103,13 +103,13 @@
                         <div class="bg-blue-500 text-white w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold">
                             1
                         </div>
-                        <span class="text-xs bg-blue-200 text-blue-800 px-3 py-1 rounded-full font-medium">Próximamente</span>
+                        <span class="text-xs bg-blue-200 text-blue-800 px-3 py-1 rounded-full font-medium">Disponible</span>
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-blue-900">Introducción al ML Industrial</h3>
-                    <p class="text-sm text-blue-800 mb-4">Fundamentos del aprendizaje automático aplicado a procesos industriales</p>
-                    <button disabled class="w-full bg-blue-300 text-blue-900 px-4 py-2 rounded-lg font-medium cursor-not-allowed">
-                        Contenido en desarrollo
-                    </button>
+                    <p class="text-sm text-blue-800 mb-4">Fundamentos: train/test split, overfitting y evaluación de modelos</p>
+                    <a href="sections/tema1.html" class="block w-full bg-blue-500 hover:bg-blue-600 text-white text-center px-4 py-2 rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Acceder al módulo
+                    </a>
                 </div>
 
                 <!-- Tema 2 -->
@@ -210,21 +210,33 @@
                         <h3 class="font-bold text-lg">Tema 1 - Notebook</h3>
                     </div>
                     <p class="text-sm text-slate-600 mb-4">Ejercicios prácticos de introducción al ML industrial</p>
-                    <a href="notebooks/tema1.ipynb" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
-                        <i class="fas fa-external-link-alt"></i> Abrir en VS Code
-                    </a>
+                    <div class="flex gap-3">
+                        <button onclick="openCollab('notebooks/tema1.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                            <i class="fab fa-google"></i> Colab
+                        </button>
+                        <button onclick="openVSCode('notebooks/tema1.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                            <i class="fas fa-code"></i> VS Code
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Placeholder Notebooks 2-6 -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 opacity-60">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-slate-400 text-white w-10 h-10 rounded-lg flex items-center justify-center">
+                        <div class="bg-emerald-500 text-white w-10 h-10 rounded-lg flex items-center justify-center">
                             <i class="fas fa-book"></i>
                         </div>
                         <h3 class="font-bold text-lg">Tema 2 - Notebook</h3>
                     </div>
-                    <p class="text-sm text-slate-600 mb-4">Próximamente disponible</p>
-                    <span class="text-xs text-slate-500">En desarrollo</span>
+                    <p class="text-sm text-slate-600 mb-4">Análisis exploratorio de datos (EDA) con Steel Plates Faults</p>
+                    <div class="flex gap-3">
+                        <button onclick="openCollab('notebooks/tema2.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                            <i class="fab fa-google"></i> Colab
+                        </button>
+                        <button onclick="openVSCode('notebooks/tema2.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                            <i class="fas fa-code"></i> VS Code
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 opacity-60">
@@ -304,6 +316,42 @@
     </footer>
 
     <script>
+        // Función para abrir en Google Colab
+        function openCollab(notebookPath) {
+            // URL de GitHub raw del notebook
+            const githubRawUrl = `https://raw.githubusercontent.com/raullb34/-UNIR-Aprendizaje-automatico-en-procesos-industriales/main/${notebookPath}`;
+            const colabUrl = `https://colab.research.google.com/github/raullb34/-UNIR-Aprendizaje-automatico-en-procesos-industriales/blob/main/${notebookPath}`;
+            window.open(colabUrl, '_blank');
+        }
+
+        // Función para abrir en VS Code local
+        function openVSCode(notebookPath) {
+            // Crear diálogo de confirmación
+            const confirmed = confirm(
+                '¿Abrir el notebook en VS Code?\n\n' +
+                'Se abrirá una solicitud de lanzamiento del protocolo vscode://.\n' +
+                'Si aparece un diálogo de seguridad, haz clic en "Abrir".\n\n' +
+                'VS Code debe estar instalado en tu sistema.'
+            );
+
+            if (confirmed) {
+                // Usar el protocolo vscode:// para abrir el archivo
+                // El navegador pedirá autorización la primera vez
+                const vscodeUrl = `vscode://file/${window.location.pathname.replace('index.html', '') + notebookPath}`;
+                window.location.href = vscodeUrl;
+
+                // Fallback: mostrar instrucciones si VS Code no se abre
+                setTimeout(() => {
+                    alert(
+                        'Si VS Code no se abrió automáticamente:\n\n' +
+                        '1. Asegúrate de que VS Code está instalado\n' +
+                        '2. Instala la extensión "Jupyter" si no la tienes\n' +
+                        '3. Intenta abrir el archivo manualmente desde: ' + notebookPath
+                    );
+                }, 2000);
+            }
+        }
+
         // Smooth scrolling para navegación
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

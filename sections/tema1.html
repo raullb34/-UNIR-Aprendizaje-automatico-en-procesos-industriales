@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 1: Introducción al Aprendizaje Automático</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .step-card { transition: all 0.3s ease; }
+        .step-card:hover { transform: translateY(-5px); border-color: #3b82f6; }
+        .logic-gate { border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <!-- Navegación -->
+    <nav class="p-4 bg-white border-b border-slate-200 flex justify-between items-center shadow-sm sticky top-0 z-50">
+        <a href="../index.html" class="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Volver al Hub
+        </a>
+        <h1 class="font-bold text-lg text-slate-700">Módulo 1: Fundamentos de ML</h1>
+        <div class="flex items-center gap-2 text-slate-400">
+            <i class="fa-solid fa-book-open"></i>
+            <span class="text-xs font-semibold uppercase tracking-wider">Introducción</span>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto p-6 lg:p-10">
+        
+        <!-- Sección 1: Definición -->
+        <section class="mb-16">
+            <div class="flex flex-col md:flex-row gap-10 items-center">
+                <div class="flex-1">
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-4">¿Qué es el Machine Learning?</h2>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        Es la rama de la Inteligencia Artificial que permite a las máquinas aprender patrones directamente de los datos sin ser programadas explícitamente para cada tarea. En la industria, esto significa pasar de sistemas basados en reglas rígidas a sistemas adaptativos que predicen fallos o calidad.
+                    </p>
+                    <div class="bg-blue-50 p-4 rounded-xl border-l-4 border-blue-500">
+                        <p class="text-sm text-blue-800 italic">
+                            "Un programa aprende de la experiencia <b>E</b>, con respecto a una tarea <b>T</b> y una medida de desempeño <b>P</b>..." - Tom Mitchell.
+                        </p>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white p-6 rounded-2xl shadow-xl border border-slate-100">
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
+                            <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">1</div>
+                            <div>
+                                <h4 class="font-bold text-sm">Entrada (Datos)</h4>
+                                <p class="text-xs text-slate-500">Sensores, históricos, registros.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
+                            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold">2</div>
+                            <div>
+                                <h4 class="font-bold text-sm">Algoritmo</h4>
+                                <p class="text-xs text-slate-500">Encuentra la función matemática.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-lg">
+                            <div class="w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold">3</div>
+                            <div>
+                                <h4 class="font-bold text-sm">Predicción</h4>
+                                <p class="text-xs text-slate-500">Decisión automatizada en tiempo real.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Tipos de Problemas -->
+        <section class="mb-16">
+            <h3 class="text-2xl font-bold mb-8 text-center">Aprendizaje Supervisado</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Regresión -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl text-blue-600">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-blue-600 mb-2">Regresión</h4>
+                    <p class="text-sm text-slate-500 mb-6">Predice un valor <b>numérico continuo</b>.</p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <span>Predecir la temperatura de un horno.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <span>Estimación de vida útil de una pieza (RUL).</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Clasificación -->
+                <div class="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 text-6xl text-orange-600">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-orange-600 mb-2">Clasificación</h4>
+                    <p class="text-sm text-slate-500 mb-6">Asigna una <b>categoría o clase</b>.</p>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <span>¿La pieza es Defectuosa o Correcta?</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-emerald-500 mt-1"></i>
+                            <span>Identificar tipo de material (Acero A vs B).</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Overfitting Simulador -->
+        <section class="bg-slate-900 rounded-3xl p-8 text-white mb-16">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">El concepto de Overfitting</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        El <b>sobreajuste (Overfitting)</b> ocurre cuando un modelo aprende "de memoria" el ruido de los datos de entrenamiento y pierde la capacidad de generalizar. Es como si un operario aprendiera solo a arreglar una máquina específica, pero no supiera qué hacer ante una máquina similar pero distinta.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">Complejidad del Modelo (Grado del Polinomio)</label>
+                            <input type="range" id="complexityRange" min="1" max="10" step="1" value="1" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            <div class="flex justify-between text-[10px] mt-2 text-slate-500 uppercase font-bold">
+                                <span>Underfitting (Simple)</span>
+                                <span>Ideal</span>
+                                <span>Overfitting (Complejo)</span>
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
+                            <p id="statusText" class="text-sm font-medium">Estado: <span class="text-yellow-400">Modelo demasiado simple (Lineal)</span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-2xl p-4">
+                    <canvas id="overfitChart" height="300"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4: Etapas Proyecto -->
+        <section>
+            <h3 class="text-2xl font-bold text-center mb-10">Ciclo de Vida de un Proyecto ML</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div class="step-card bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-database text-blue-500 text-2xl mb-2"></i>
+                    <h5 class="text-xs font-bold uppercase">1. Recogida</h5>
+                    <p class="text-[10px] text-slate-500 mt-1">Ingesta de datos de sensores/ERP.</p>
+                </div>
+                <div class="step-card bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-broom text-blue-500 text-2xl mb-2"></i>
+                    <h5 class="text-xs font-bold uppercase">2. Limpieza</h5>
+                    <p class="text-[10px] text-slate-500 mt-1">Tratamiento de nulos y outliers.</p>
+                </div>
+                <div class="step-card bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-gears text-blue-500 text-2xl mb-2"></i>
+                    <h5 class="text-xs font-bold uppercase">3. Entrenamiento</h5>
+                    <p class="text-[10px] text-slate-500 mt-1">Ajuste de parámetros del modelo.</p>
+                </div>
+                <div class="step-card bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-vial text-blue-500 text-2xl mb-2"></i>
+                    <h5 class="text-xs font-bold uppercase">4. Evaluación</h5>
+                    <p class="text-[10px] text-slate-500 mt-1">Validación con datos no vistos.</p>
+                </div>
+                <div class="step-card bg-white p-4 rounded-xl border border-slate-200 text-center">
+                    <i class="fa-solid fa-rocket text-blue-500 text-2xl mb-2"></i>
+                    <h5 class="text-xs font-bold uppercase">5. Despliegue</h5>
+                    <p class="text-[10px] text-slate-500 mt-1">Integración en la planta industrial.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="mt-20 py-10 bg-slate-100 border-t border-slate-200 text-center">
+        <p class="text-slate-400 text-xs">Material docente - Grado en Inteligencia Artificial aplicada a la Industria</p>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('overfitChart').getContext('2d');
+        let chart;
+
+        // Generar datos con ruido
+        const generateNoisyData = () => {
+            const data = [];
+            for (let x = 0; x <= 10; x += 1) {
+                // Función base cuadrática + ruido
+                const y = 0.5 * Math.pow(x - 5, 2) + 5 + (Math.random() * 4 - 2);
+                data.push({x, y});
+            }
+            return data;
+        };
+
+        const noisyData = generateNoisyData();
+
+        const updateOverfitChart = () => {
+            const complexity = parseInt(document.getElementById('complexityRange').value);
+            const statusText = document.getElementById('statusText');
+            
+            // Simular predicción según complejidad
+            const predictionLine = [];
+            for (let x = 0; x <= 10; x += 0.2) {
+                let y;
+                if (complexity <= 2) {
+                    // Underfitting: Línea recta
+                    y = 0.5 * x + 5;
+                    statusText.innerHTML = 'Estado: <span class="text-yellow-400">Underfitting (Modelo demasiado simple)</span>';
+                } else if (complexity <= 6) {
+                    // Ideal: Curva suave
+                    y = 0.5 * Math.pow(x - 5, 2) + 5;
+                    statusText.innerHTML = 'Estado: <span class="text-emerald-400">Ajuste Ideal (Generaliza bien)</span>';
+                } else {
+                    // Overfitting: Oscilaciones locas para tocar todos los puntos
+                    y = 0.5 * Math.pow(x - 5, 2) + 5 + Math.sin(x * complexity) * 2;
+                    statusText.innerHTML = 'Estado: <span class="text-rose-400">Overfitting (Demasiado complejo, memoriza ruido)</span>';
+                }
+                predictionLine.push({x, y});
+            }
+
+            if (chart) chart.destroy();
+
+            chart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [
+                        {
+                            label: 'Datos Reales (Ruidosos)',
+                            data: noisyData,
+                            backgroundColor: '#64748b',
+                            pointRadius: 5
+                        },
+                        {
+                            label: 'Modelo Aprendido',
+                            data: predictionLine,
+                            type: 'line',
+                            borderColor: complexity > 6 ? '#f43f5e' : (complexity < 3 ? '#fbbf24' : '#10b981'),
+                            borderWidth: 3,
+                            fill: false,
+                            pointRadius: 0,
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        x: { min: 0, max: 10, grid: { display: false } },
+                        y: { min: 0, max: 25, grid: { color: '#f1f5f9' } }
+                    },
+                    animation: { duration: 400 }
+                }
+            });
+        };
+
+        document.getElementById('complexityRange').addEventListener('input', updateOverfitChart);
+        
+        // Carga inicial
+        window.onload = updateOverfitChart;
+    </script>
+</body>
+</html>
