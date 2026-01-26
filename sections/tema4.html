@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tema 4: Regresión y Evaluación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Configuración robusta de MathJax para renderizado de símbolos -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        .card { @apply bg-white p-6 rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow; }
+        .metric-badge { @apply px-3 py-1 rounded-full text-sm font-bold; }
+        .math-block { @apply bg-slate-50 p-5 rounded-lg text-center my-4 border border-slate-200 shadow-inner text-slate-900; }
+        .residuos-line { stroke: rgba(239, 68, 68, 0.5); stroke-dasharray: 4; stroke-width: 2; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <!-- Header -->
+    <header class="bg-emerald-600 text-white py-12 px-6 shadow-lg">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl font-extrabold mb-2 text-white">Tema 4: Modelos de Regresión</h1>
+            <p class="text-emerald-50 text-lg">Predicción de valores continuos y evaluación cuantitativa del desempeño.</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6 space-y-12">
+        
+        <!-- Sección 1: Fundamentos de la Regresión Lineal -->
+        <section>
+            <h2 class="text-2xl font-bold text-slate-700 mb-6 border-b-2 border-emerald-200 pb-2">1. La Recta de Regresión (Cap. 4.2)</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="card border-l-4 border-emerald-500">
+                    <h3 class="font-bold text-lg mb-2">Ecuación del Modelo</h3>
+                    <p class="text-sm text-slate-600 mb-4">Buscamos predecir una variable dependiente ($y$) a partir de una independiente ($x$) mediante una combinación lineal.</p>
+                    <div class="math-block text-2xl">
+                        $$y = \beta_0 + \beta_1 x + \epsilon$$
+                    </div>
+                    <ul class="text-xs space-y-2 text-slate-600">
+                        <li><strong>$\beta_0$:</strong> Intercepto (valor de la predicción cuando $x = 0$)</li>
+                        <li><strong>$\beta_1$:</strong> Pendiente (cambio en $y$ por cada unidad de $x$)</li>
+                        <li><strong>$\epsilon$:</strong> Término de error o residuo aleatorio</li>
+                    </ul>
+                </div>
+                <div class="card border-l-4 border-amber-500">
+                    <h3 class="font-bold text-lg mb-2">Mínimos Cuadrados (OLS)</h3>
+                    <p class="text-sm text-slate-600 mb-4">El objetivo es encontrar los parámetros que minimizan la suma de las distancias al cuadrado.</p>
+                    <div class="math-block">
+                        $$\min \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$$
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-2 italic text-center">Donde $\hat{y}_i$ es el valor predicho para la observación $i$.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 2: Simulador de Residuos e Intercepto -->
+        <section class="bg-white p-8 rounded-2xl shadow-md border border-emerald-100">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-700">2. Simulador: Ajuste y Error</h2>
+                    <p class="text-slate-500 italic text-sm">Ajusta la pendiente $\beta_1$ para reducir los residuos (distancia roja) entre los puntos reales y la predicción.</p>
+                </div>
+                <span class="metric-badge bg-emerald-100 text-emerald-700">Visualización de Residuos</span>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Ajustar Pendiente ($\beta_1$):</label>
+                        <input type="range" id="slopeSlider" min="0" max="2" step="0.1" value="0.5" class="w-full h-2 bg-emerald-200 rounded-lg appearance-none cursor-pointer">
+                        <div class="flex justify-between text-xs text-slate-400 mt-1">
+                            <span>$\beta_1 = 0.0$</span>
+                            <span id="slopeVal" class="font-bold text-emerald-600">0.5</span>
+                            <span>$\beta_1 = 2.0$</span>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 gap-3">
+                        <div class="p-3 bg-red-50 rounded-lg border border-red-100">
+                            <p class="text-xs uppercase font-bold text-red-400">MSE (Error Cuadrático Medio)</p>
+                            <p id="mseVal" class="text-xl font-mono font-bold text-red-600">0.00</p>
+                            <p class="text-[10px] text-red-400">$\frac{1}{n} \sum (y_i - \hat{y}_i)^2$</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                            <p class="text-xs uppercase font-bold text-blue-400">MAE (Error Absoluto Medio)</p>
+                            <p id="maeVal" class="text-xl font-mono font-bold text-blue-600">0.00</p>
+                            <p class="text-[10px] text-blue-400">$\frac{1}{n} \sum |y_i - \hat{y}_i|$</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-2 relative h-[300px]">
+                    <canvas id="regressionChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Métricas de Evaluación -->
+        <section>
+            <h2 class="text-2xl font-bold text-slate-700 mb-6">3. Métricas Cuantitativas (Cap. 4.3)</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="card bg-slate-800 text-white border-none">
+                    <h4 class="text-emerald-400 font-bold mb-1">Coeficiente $R^2$</h4>
+                    <p class="text-xs text-slate-300">Indica la proporción de varianza explicada. Un $R^2 = 1.0$ significa un ajuste perfecto sin residuos.</p>
+                </div>
+                <div class="card bg-slate-800 text-white border-none">
+                    <h4 class="text-emerald-400 font-bold mb-1">RMSE</h4>
+                    <p class="text-xs text-slate-300">$\sqrt{MSE}$. Es muy útil porque tiene las mismas unidades que la variable de respuesta $y$.</p>
+                </div>
+                <div class="card bg-slate-800 text-white border-none">
+                    <h4 class="text-emerald-400 font-bold mb-1">Sesgo vs Varianza</h4>
+                    <p class="text-xs text-slate-300">Un modelo muy simple tiene alto <strong>sesgo</strong>; uno muy complejo tiene alta <strong>varianza</strong> (overfitting).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 4: Implementación -->
+        <section class="bg-slate-900 text-slate-100 p-8 rounded-2xl shadow-xl">
+            <h2 class="text-2xl font-bold mb-4">4. Implementación en Python (Scikit-Learn)</h2>
+            <p class="text-slate-400 text-sm mb-4">Flujo estándar para entrenar y evaluar una regresión lineal:</p>
+            <pre class="bg-black/30 border border-slate-700 p-4 rounded-lg overflow-x-auto font-mono text-sm leading-6"><code>from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# 1. Instanciar el modelo
+model = LinearRegression()
+
+# 2. Entrenar con datos de entrenamiento
+model.fit(X_train, y_train)
+
+# 3. Realizar predicciones sobre el test
+y_pred = model.predict(X_test)
+
+# 4. Cálculo de métricas
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Coeficiente R²: {r2:.4f}")</code></pre>
+        </section>
+    </main>
+
+    <footer class="text-center py-10 text-slate-400 text-sm">
+        <p>Material de Apoyo - Tema 4: Regresión | Aprendizaje Automático Industrial</p>
+    </footer>
+
+    <script>
+        const ctx = document.getElementById('regressionChart').getContext('2d');
+        const slopeSlider = document.getElementById('slopeSlider');
+        const slopeVal = document.getElementById('slopeVal');
+        const mseVal = document.getElementById('mseVal');
+        const maeVal = document.getElementById('maeVal');
+
+        // Datos sintéticos con tendencia lineal moderada
+        const xValues = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const yValues = [1.5, 2.5, 2.0, 4.8, 5.0, 5.5, 7.5, 6.8, 9.5, 10.2];
+
+        const chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Datos Reales (Sensores)',
+                    data: xValues.map((x, i) => ({x: x, y: yValues[i]})),
+                    backgroundColor: '#10b981',
+                    pointRadius: 6
+                }, {
+                    label: 'Modelo Predictivo ($\\hat{y}$)',
+                    data: [], 
+                    type: 'line',
+                    borderColor: '#3b82f6',
+                    borderWidth: 3,
+                    pointRadius: 0,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 0, max: 12, title: { display: true, text: 'Variable y (Salida)' } },
+                    x: { type: 'linear', position: 'bottom', title: { display: true, text: 'Variable x (Entrada)' } }
+                }
+            }
+        });
+
+        function updateRegression() {
+            const b1 = parseFloat(slopeSlider.value);
+            const b0 = 0.5; // Intercepto simplificado
+            
+            // Puntos para la línea
+            const lineData = [
+                {x: 0, y: b0},
+                {x: 11, y: b0 + b1 * 11}
+            ];
+
+            let totalSqError = 0;
+            let totalAbsError = 0;
+            
+            xValues.forEach((x, i) => {
+                const pred = b0 + b1 * x;
+                const real = yValues[i];
+                totalSqError += Math.pow(real - pred, 2);
+                totalAbsError += Math.abs(real - pred);
+            });
+
+            const mse = totalSqError / xValues.length;
+            const mae = totalAbsError / xValues.length;
+
+            // Actualizar textos
+            slopeVal.innerText = b1.toFixed(1);
+            mseVal.innerText = mse.toFixed(2);
+            maeVal.innerText = mae.toFixed(2);
+            
+            chart.data.datasets[1].data = lineData;
+            chart.update('none'); 
+        }
+
+        slopeSlider.oninput = updateRegression;
+        // Esperar a que MathJax termine si es necesario, aunque el simulador es JS puro
+        updateRegression();
+    </script>
+</body>
+</html>

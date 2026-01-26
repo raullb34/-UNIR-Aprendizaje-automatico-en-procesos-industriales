@@ -164,8 +164,8 @@
                         </div>
                         <span class="text-xs bg-purple-200 text-purple-800 px-3 py-1 rounded-full font-medium">Disponible</span>
                     </div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-900">SVM y Mantenimiento Predictivo</h3>
-                    <p class="text-sm text-purple-800 mb-4">Máquinas de vectores de soporte para clasificación industrial</p>
+                    <h3 class="text-xl font-bold mb-2 text-purple-900">Preprocesamiento y Normalización</h3>
+                    <p class="text-sm text-purple-800 mb-4">Calidad de datos, imputación y técnicas de normalización</p>
                     <a href="sections/tema3.html" class="block w-full bg-purple-500 hover:bg-purple-600 text-white text-center px-4 py-2 rounded-lg font-medium transition">
                         <i class="fas fa-arrow-right mr-2"></i>Acceder al módulo
                     </a>
@@ -177,13 +177,13 @@
                         <div class="bg-amber-500 text-white w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold">
                             4
                         </div>
-                        <span class="text-xs bg-amber-200 text-amber-800 px-3 py-1 rounded-full font-medium">Próximamente</span>
+                        <span class="text-xs bg-amber-200 text-amber-800 px-3 py-1 rounded-full font-medium">Disponible</span>
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-amber-900">Árboles de Decisión</h3>
                     <p class="text-sm text-amber-800 mb-4">Modelos basados en árboles para toma de decisiones</p>
-                    <button disabled class="w-full bg-amber-300 text-amber-900 px-4 py-2 rounded-lg font-medium cursor-not-allowed">
-                        Contenido en desarrollo
-                    </button>
+                    <a href="sections/tema4.html" class="block w-full bg-amber-500 hover:bg-amber-600 text-white text-center px-4 py-2 rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Acceder al módulo
+                    </a>
                 </div>
 
                 <!-- Tema 5 -->
@@ -192,13 +192,13 @@
                         <div class="bg-rose-500 text-white w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold">
                             5
                         </div>
-                        <span class="text-xs bg-rose-200 text-rose-800 px-3 py-1 rounded-full font-medium">Próximamente</span>
+                        <span class="text-xs bg-rose-200 text-rose-800 px-3 py-1 rounded-full font-medium">Disponible</span>
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-rose-900">Redes Neuronales</h3>
                     <p class="text-sm text-rose-800 mb-4">Deep Learning aplicado a procesos industriales</p>
-                    <button disabled class="w-full bg-rose-300 text-rose-900 px-4 py-2 rounded-lg font-medium cursor-not-allowed">
-                        Contenido en desarrollo
-                    </button>
+                    <a href="sections/tema5.html" class="block w-full bg-rose-500 hover:bg-rose-600 text-white text-center px-4 py-2 rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Acceder al módulo
+                    </a>
                 </div>
 
                 <!-- Tema 6 -->
@@ -207,13 +207,13 @@
                         <div class="bg-indigo-500 text-white w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold">
                             6
                         </div>
-                        <span class="text-xs bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full font-medium">Próximamente</span>
+                        <span class="text-xs bg-indigo-200 text-indigo-800 px-3 py-1 rounded-full font-medium">Disponible</span>
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-indigo-900">Optimización Industrial</h3>
                     <p class="text-sm text-indigo-800 mb-4">Técnicas de optimización con ML en la industria</p>
-                    <button disabled class="w-full bg-indigo-300 text-indigo-900 px-4 py-2 rounded-lg font-medium cursor-not-allowed">
-                        Contenido en desarrollo
-                    </button>
+                    <a href="sections/tema6.html" class="block w-full bg-indigo-500 hover:bg-indigo-600 text-white text-center px-4 py-2 rounded-lg font-medium transition">
+                        <i class="fas fa-arrow-right mr-2"></i>Acceder al módulo
+                    </a>
                 </div>
 
             </div>
@@ -268,15 +268,22 @@
                     </div>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 opacity-60">
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
                     <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-slate-400 text-white w-10 h-10 rounded-lg flex items-center justify-center">
+                        <div class="bg-purple-500 text-white w-10 h-10 rounded-lg flex items-center justify-center">
                             <i class="fas fa-book"></i>
                         </div>
                         <h3 class="font-bold text-lg">Tema 3 - Notebook</h3>
                     </div>
-                    <p class="text-sm text-slate-600 mb-4">Próximamente disponible</p>
-                    <span class="text-xs text-slate-500">En desarrollo</span>
+                    <p class="text-sm text-slate-600 mb-4">Preprocesamiento y normalización de datos industriales</p>
+                    <div class="flex gap-3">
+                        <button onclick="openCollab('notebooks/tema3.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                            <i class="fab fa-google"></i> Colab
+                        </button>
+                        <button onclick="openVSCode('notebooks/tema3.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                            <i class="fas fa-code"></i> VS Code
+                        </button>
+                    </div>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 opacity-60">
@@ -312,25 +319,57 @@
                     <span class="text-xs text-slate-500">En desarrollo</span>
                 </div>
 
-                <!-- Material de apoyo: se muestra junto a los notebooks principales -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
-                    <div class="flex items-center gap-3 mb-4">
-                        <div class="bg-slate-500 text-white w-10 h-10 rounded-lg flex items-center justify-center">
-                            <i class="fas fa-folder-open"></i>
-                        </div>
-                        <h3 class="font-bold text-lg">Apoyo Clase - Tema 2</h3>
-                    </div>
-                    <p class="text-sm text-slate-600 mb-4">Notebook de apoyo para la sesión de EDA (Steel Plates Faults).</p>
-                    <div class="flex gap-3">
-                        <button onclick="openCollab('notebooks/tema2_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
-                            <i class="fab fa-google"></i> Colab
-                        </button>
-                        <button onclick="openVSCode('notebooks/tema2_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
-                            <i class="fas fa-code"></i> VS Code
-                        </button>
-                    </div>
-                </div>
+            </div>
 
+            <!-- Separador y Material de Apoyo -->
+            <div class="mt-12 pt-8 border-t-2 border-slate-300">
+                <div class="flex items-center gap-3 mb-6">
+                    <i class="fas fa-folder-open text-slate-600 text-2xl"></i>
+                    <h3 class="text-2xl font-bold text-slate-800">Material de Apoyo</h3>
+                </div>
+                <p class="text-slate-600 mb-8">Notebooks complementarios para reforzar los conceptos de cada tema</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Apoyo Tema 2 -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-slate-600 text-white w-10 h-10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3 class="font-bold text-lg">Apoyo - Tema 2</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-4">Ejercicios de apoyo para EDA con Steel Plates</p>
+                        <div class="flex gap-3">
+                            <button onclick="openCollab('notebooks/tema2_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                                <i class="fab fa-google"></i> Colab
+                            </button>
+                            <button onclick="openVSCode('notebooks/tema2_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                                <i class="fas fa-code"></i> VS Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Apoyo Tema 3 -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="bg-slate-600 text-white w-10 h-10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-chalkboard-teacher"></i>
+                            </div>
+                            <h3 class="font-bold text-lg">Apoyo - Tema 3</h3>
+                        </div>
+                        <p class="text-sm text-slate-600 mb-4">Ejercicios de apoyo para preprocesamiento de datos</p>
+                        <div class="flex gap-3">
+                            <button onclick="openCollab('notebooks/tema3_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-sm">
+                                <i class="fab fa-google"></i> Colab
+                            </button>
+                            <button onclick="openVSCode('notebooks/tema3_apoyo_clase.ipynb')" class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium text-sm">
+                                <i class="fas fa-code"></i> VS Code
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
     </section>
