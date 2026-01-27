@@ -72,6 +72,67 @@
             </div>
         </section>
 
+        <!-- Sección 1.1: Desarrollo Matemático con Desplegables -->
+        <section class="bg-white p-6 rounded-2xl shadow-md border border-emerald-100">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-slate-700">1.1 Desarrollo Matemático</h3>
+                <span class="metric-badge bg-emerald-50 text-emerald-700">Regresión lineal simple</span>
+            </div>
+            <div class="space-y-3">
+                <details class="card">
+                    <summary class="font-semibold text-slate-700 cursor-pointer">Modelo y notación</summary>
+                    <p class="text-sm text-slate-600 mt-2">Para cada observación $i = 1, \dots, n$:</p>
+                    <div class="math-block">$$y_i = \beta_0 + \beta_1 x_i + \epsilon_i$$</div>
+                    <ul class="text-sm text-slate-600 space-y-1 mt-2">
+                        <li>$x_i$: variable explicativa</li>
+                        <li>$y_i$: respuesta observada</li>
+                        <li>$\beta_0$: intercepto</li>
+                        <li>$\beta_1$: pendiente</li>
+                        <li>$\epsilon_i$: error/noise</li>
+                    </ul>
+                    <p class="text-sm text-slate-600 mt-2">Predicción y residuo:</p>
+                    <div class="math-block">$$\hat{y}_i = \beta_0 + \beta_1 x_i \quad\text{y}\quad e_i = y_i - \hat{y}_i$$</div>
+                </details>
+
+                <details class="card">
+                    <summary class="font-semibold text-slate-700 cursor-pointer">Supuesto estadístico</summary>
+                    <p class="text-sm text-slate-600 mt-2">Errores i.i.d. gaussianos:</p>
+                    <div class="math-block">$$\epsilon_i \sim \mathcal{N}(0, \sigma^2) \implies y_i\,|\,x_i \sim \mathcal{N}(\beta_0 + \beta_1 x_i, \sigma^2)$$</div>
+                    <p class="text-sm text-slate-600">Esto garantiza que la verosimilitud sea un producto de densidades normales.</p>
+                </details>
+
+                <details class="card">
+                    <summary class="font-semibold text-slate-700 cursor-pointer">Densidad y verosimilitud</summary>
+                    <p class="text-sm text-slate-600 mt-2">Densidad de una observación:</p>
+                    <div class="math-block">$$p(y_i\mid x_i,\beta_0,\beta_1,\sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\Bigg(-\frac{(y_i - (\beta_0 + \beta_1 x_i))^2}{2\sigma^2}\Bigg)$$</div>
+                    <p class="text-sm text-slate-600">Verosimilitud del dataset (independencia):</p>
+                    <div class="math-block">$$L(\beta_0,\beta_1,\sigma^2) = \prod_{i=1}^n p(y_i\mid x_i,\beta_0,\beta_1,\sigma^2)$$</div>
+                    <p class="text-sm text-slate-600">Sustituyendo:</p>
+                    <div class="math-block">$$L = \Big(\frac{1}{\sqrt{2\pi\sigma^2}}\Big)^n \exp\Bigg(-\frac{1}{2\sigma^2}\sum_{i=1}^n (y_i - (\beta_0 + \beta_1 x_i))^2\Bigg)$$</div>
+                </details>
+
+                <details class="card">
+                    <summary class="font-semibold text-slate-700 cursor-pointer">Log-verosimilitud y SSE</summary>
+                    <p class="text-sm text-slate-600 mt-2">Aplicando logaritmo (más fácil de optimizar):</p>
+                    <div class="math-block">$$\log L = -\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (y_i - (\beta_0 + \beta_1 x_i))^2$$</div>
+                    <p class="text-sm text-slate-600">El primer término no depende de $\beta_0,\beta_1$. Para $\sigma^2>0$, maximizar $\log L$ equivale a minimizar:</p>
+                    <div class="math-block">$$\text{SSE}(\beta_0,\beta_1) = \sum_{i=1}^n (y_i - \hat{y}_i)^2$$</div>
+                </details>
+
+                <details class="card">
+                    <summary class="font-semibold text-slate-700 cursor-pointer">SSE en detalle</summary>
+                    <div class="space-y-3 mt-2 text-sm text-slate-600">
+                        <p><strong>Definición:</strong> $\text{SSE} = \sum_{i=1}^n e_i^2 = \sum_{i=1}^n (y_i - \hat{y}_i)^2$.</p>
+                        <p><strong>Por qué cuadrado:</strong> evita cancelaciones de signos y penaliza más los errores grandes.</p>
+                        <p><strong>Geometría:</strong> $\text{SSE} = \lVert y - \hat{y} \rVert^2$, la distancia euclídea al cuadrado entre reales y predicciones.</p>
+                        <p><strong>Relación con MLE:</strong> con ruido gaussiano, minimizar SSE = maximizar la log-verosimilitud en $\beta_0,\beta_1$.</p>
+                        <p><strong>Descomposición:</strong> $\text{SST} = \text{SSR} + \text{SSE}$ y $R^2 = 1 - \tfrac{\text{SSE}}{\text{SST}}$.</p>
+                        <p><strong>Sensibilidad:</strong> es sensible a outliers; si hay heterocedasticidad conviene ponderar (WLS).</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
         <!-- Sección 2: Simulador de Residuos e Intercepto -->
         <section class="bg-white p-8 rounded-2xl shadow-md border border-emerald-100">
             <div class="flex justify-between items-start mb-6">
